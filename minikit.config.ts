@@ -25,7 +25,7 @@ export const minikitConfig = {
     homeUrl: ROOT_URL,
     webhookUrl: `${ROOT_URL}/api/webhook`,
     primaryCategory: "productivity",
-    tags: ["marketing", "ads", "quickstart", "waitlist", "tasks", "planning", "baseapp", "productivity", "sweet"],
+    tags: ["quickstart", "tasks", "planning", "baseapp", "productivity"],
     heroImageUrl: `${ROOT_URL}/mysweettask-hero.png`, 
     tagline: "Your cutest task manager on Base 💖",
     ogTitle: "My Sweet Tasks",
