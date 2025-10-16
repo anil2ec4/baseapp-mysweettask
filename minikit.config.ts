@@ -13,6 +13,9 @@ export const minikitConfig = {
     "payload": "eyJkb21haW4iOiJiYXNlYXBwLW15c3dlZXR0YXNrLnZlcmNlbC5hcHAifQ",
     "signature": "LXKpsm6qhOA6Bb5vv5iU0yAUY7YgefaeBC8HoFNVj1cXQayEYvLm5ItzbPvPkMBhzBVsIolFLFDmCCsUlUibTRw="
   },
+  "baseBuilder": {
+    "allowedAddresses": ["0xe8cc79ceaabf3ddf939469452341579ece2a5611"]
+  },
   miniapp: {
     version: "1",
     name: "My Sweet Tasks", 
