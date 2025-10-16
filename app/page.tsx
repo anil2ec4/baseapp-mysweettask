@@ -557,6 +557,39 @@ const handleDisconnect = useCallback(async () => {
     savePrefs(currentFilter, currentSort);
   }, [currentFilter, currentSort, savePrefs]);
 
+  // --- Base Build Preview: sdk.actions.ready() güvenli çağrı ---
+useEffect(() => {
+  let cancelled = false;
+
+  (async () => {
+    try {
+      // SSR çakışmasın diye dinamik import
+      const mod: any = await import("@farcaster/miniapp-sdk");
+
+      // Farklı export şekillerine karşı güvenli erişim
+      const s =
+        mod?.sdk           // yeni sürümler: { sdk }
+        ?? mod?.default    // bazı sürümler: default export
+        ?? (window as any)?.miniapp; // en son çare: global
+
+      if (cancelled || !s) return;
+
+      if (s.actions?.ready) {
+        await s.actions.ready();            // ✅ dokümandaki doğru çağrı
+        s.logger?.info?.("ready_sent(sdk.actions.ready)");
+      } else if (s.ready) {
+        await s.ready();                    // eski/alternatif
+        s.logger?.info?.("ready_sent(ready)");
+      }
+    } catch (e) {
+      // sessiz bırakıyoruz; Preview konsolunda gereksiz hata olmasın
+    }
+  })();
+
+  return () => { cancelled = true; };
+}, []);
+// --- /sdk.actions.ready() güvenli çağrı ---
+
   return (
     <main className={classNames(poppins.className, "bg-rose-50 min-h-screen flex items-center justify-center p-4")}>
       <div id="app-wrapper" className="w-full max-w-lg mx-auto">
