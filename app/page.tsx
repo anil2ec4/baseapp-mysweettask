@@ -152,30 +152,43 @@ export default function Page() {
     }
   }, [currentUser, prefsKey, tasksKey]);
 
-  // --- Base Build Preview: MiniApp "ready" sinyali ---
+// --- Base Build Preview: MiniApp "ready" sinyali (actions.ready desteği) ---
 useEffect(() => {
   const tryReady = () => {
     const m = (window as any)?.miniapp;
-    if (m?.ready) {
-      m.ready();                                 // Preview'da "Ready" olur
-      m.logger?.info?.("My Sweet Tasks booted"); // Console sekmesine log düşer
-      return true;
+    if (!m) return false;
+
+    try {
+      // Yeni SDK: sdk.actions.ready()
+      if (m.actions?.ready) {
+        m.actions.ready();
+        m.logger?.info?.("ready_sent(actions.ready)");
+        return true;
+      }
+      // Eski/alternatif: sdk.ready()
+      if (m.ready) {
+        m.ready();
+        m.logger?.info?.("ready_sent(ready)");
+        return true;
+      }
+    } catch {
+      // no-op
     }
     return false;
   };
 
   if (tryReady()) return;
 
+  // miniapp objesi geç gelebilir -> 10 sn boyunca dene
   let tries = 0;
   const id = setInterval(() => {
     tries++;
-    if (tryReady() || tries > 20) clearInterval(id); // ~10 sn dener
+    if (tryReady() || tries > 20) clearInterval(id);
   }, 500);
 
   return () => clearInterval(id);
 }, []);
 // --- /MiniApp "ready" sinyali ---
-
 
   // Görevleri ve tercihleri kaydet
   const saveTasks = useCallback(
