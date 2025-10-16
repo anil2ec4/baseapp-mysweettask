@@ -15,7 +15,7 @@ export const minikitConfig = {
   },
   miniapp: {
     version: "1",
-    name: "My Sweet Taskss", 
+    name: "My Sweet Tasks", 
     subtitle: "Your AI Ad Companion", 
     description: "Ads",
     screenshotUrls: [`${ROOT_URL}/screenshot-portrait.png`],
