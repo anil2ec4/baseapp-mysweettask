@@ -152,6 +152,31 @@ export default function Page() {
     }
   }, [currentUser, prefsKey, tasksKey]);
 
+  // --- Base Build Preview: MiniApp "ready" sinyali ---
+useEffect(() => {
+  const tryReady = () => {
+    const m = (window as any)?.miniapp;
+    if (m?.ready) {
+      m.ready();                                 // Preview'da "Ready" olur
+      m.logger?.info?.("My Sweet Tasks booted"); // Console sekmesine log düşer
+      return true;
+    }
+    return false;
+  };
+
+  if (tryReady()) return;
+
+  let tries = 0;
+  const id = setInterval(() => {
+    tries++;
+    if (tryReady() || tries > 20) clearInterval(id); // ~10 sn dener
+  }, 500);
+
+  return () => clearInterval(id);
+}, []);
+// --- /MiniApp "ready" sinyali ---
+
+
   // Görevleri ve tercihleri kaydet
   const saveTasks = useCallback(
     (next: Task[]) => {
