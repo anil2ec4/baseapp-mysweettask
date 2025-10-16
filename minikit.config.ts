@@ -1,3 +1,4 @@
+import type { MiniAppManifest } from "@coinbase/onchainkit/minikit";
 const ROOT_URL =
   process.env.NEXT_PUBLIC_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000');
@@ -7,14 +8,14 @@ const ROOT_URL =
  *
  * @see {@link https://miniapps.farcaster.xyz/docs/guides/publishing}
  */
-export const minikitConfig = {
-  "accountAssociation": {
-    "header": "eyJmaWQiOjYyOTksInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg3N0JGYTA2RGFGMTk2RTI0NTkwNkRkRjBBNkQ0NzJCNjZDMWJhMjgwIn0",
-    "payload": "eyJkb21haW4iOiJiYXNlYXBwLW15c3dlZXR0YXNrLnZlcmNlbC5hcHAifQ",
-    "signature": "LXKpsm6qhOA6Bb5vv5iU0yAUY7YgefaeBC8HoFNVj1cXQayEYvLm5ItzbPvPkMBhzBVsIolFLFDmCCsUlUibTRw="
+export const minikitConfig: MiniAppManifest & { baseBuilder?: { ownerAddress: string } } = {
+  accountAssociation: {
+    header: "eyJmaWQiOjYyOTksInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg3N0JGYTA2RGFGMTk2RTI0NTkwNkRkRjBBNkQ0NzJCNjZDMWJhMjgwIn0",
+    payload: "eyJkb21haW4iOiJiYXNlYXBwLW15c3dlZXR0YXNrLnZlcmNlbC5hcHAifQ",
+    signature: "LXKpsm6qhOA6Bb5vv5iU0yAUY7YgefaeBC8HoFNVj1cXQayEYvLm5ItzbPvPkMBhzBVsIolFLFDmCCsUlUibTRw="
   },
-  "baseBuilder": {
-    "allowedAddresses": [
+  baseBuilder: {
+    allowedAddresses: [
       "0xe8cc79ceaabf3ddf939469452341579ece2a5611"
     ]
   },
