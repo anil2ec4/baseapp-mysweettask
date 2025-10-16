@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "find-my-far-friend.vercel.app",
+        hostname: "baseapp-mysweettask.vercel.app",
       }
     ],
   },
