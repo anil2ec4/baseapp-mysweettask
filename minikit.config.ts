@@ -21,7 +21,7 @@ export const minikitConfig: MiniAppManifest & { baseBuilder?: { ownerAddress: st
   miniapp: {
     version: "1",
     name: "My Sweet Tasks", 
-    subtitle: "Plan. Split. Relax.", 
+    subtitle: "Plan, Split, Relax.", 
     description: "A beautifully sweet mini app to plan, share, and track your daily tasks — right on Base.",
     screenshotUrls: [`${ROOT_URL}/mysweettask-portrait.png`],
     iconUrl: `${ROOT_URL}/mysweettask-icon.png`,
