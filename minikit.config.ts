@@ -27,7 +27,7 @@ export const minikitConfig = {
     primaryCategory: "productivity",
     tags: ["quickstart", "tasks", "planning", "baseapp", "productivity"],
     heroImageUrl: `${ROOT_URL}/mysweettask-hero.png`, 
-    tagline: "Your cutest task manager on Base 💖",
+    tagline: "Your cutest task manager 💖",
     ogTitle: "My Sweet Tasks",
     ogDescription: "Stay productive and have fun with My Sweet Tasks — the candy-colored to-do app built for Base users.",
     ogImageUrl: `${ROOT_URL}/mysweettask-hero.png`,
