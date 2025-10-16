@@ -14,7 +14,9 @@ export const minikitConfig = {
     "signature": "LXKpsm6qhOA6Bb5vv5iU0yAUY7YgefaeBC8HoFNVj1cXQayEYvLm5ItzbPvPkMBhzBVsIolFLFDmCCsUlUibTRw="
   },
   "baseBuilder": {
-    "ownerAddress": "0xe8cc79ceaabf3ddf939469452341579ece2a5611"
+    "allowedAddresses": [
+      "0xe8cc79ceaabf3ddf939469452341579ece2a5611"
+    ]
   },
   miniapp: {
     version: "1",
