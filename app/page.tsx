@@ -129,27 +129,65 @@ export default function Page() {
     };
   }, [currentUser]);
 
-  // Kullanıcı değiştiğinde görevleri ve tercihleri yükle
+  // Kullanıcı değiştiğinde görevleri ve tercihleri yükle (önce backend, yoksa localStorage)
   useEffect(() => {
     if (!currentUser) return;
 
-    // prefs
-    try {
-      const s = localStorage.getItem(prefsKey!);
-      if (s) {
-        const { filter, sort } = JSON.parse(s);
-        setCurrentFilter(filter ?? "active");
-        setCurrentSort(sort ?? "creation");
-      }
-    } catch {}
+    const addr = currentUser.address;
 
-    // tasks
-    try {
-      const s = localStorage.getItem(tasksKey!);
-      setTasks(s ? JSON.parse(s) : []);
-    } catch {
-      setTasks([]);
-    }
+    (async () => {
+      // preferences from backend
+      try {
+        const r = await fetch(`/api/preferences?address=${encodeURIComponent(addr)}`);
+        if (r.ok) {
+          const j = await r.json();
+          if (j?.preferences) {
+            setCurrentFilter(j.preferences.filter ?? "active");
+            setCurrentSort(j.preferences.sort ?? "creation");
+          } else {
+            // fallback local
+            const s = localStorage.getItem(prefsKey!);
+            if (s) {
+              const { filter, sort } = JSON.parse(s);
+              setCurrentFilter(filter ?? "active");
+              setCurrentSort(sort ?? "creation");
+            }
+          }
+        }
+      } catch {}
+
+      // tasks from backend
+      try {
+        const r = await fetch(`/api/tasks?address=${encodeURIComponent(addr)}`);
+        if (r.ok) {
+          const j = await r.json();
+          if (Array.isArray(j?.tasks) && j.tasks.length > 0) {
+            const mapped = j.tasks.map((t: any) => ({
+              id: Number(t.id),
+              text: t.text,
+              completed: !!t.completed,
+              isEditing: false,
+              priority: (t.priority as Priority) ?? "medium",
+              dueDate: t.due_date ? new Date(t.due_date).toISOString().slice(0,10) : null,
+              tags: Array.isArray(t.tags) ? t.tags : [],
+              pomodoros: typeof t.pomodoros === "number" ? t.pomodoros : 0,
+              completedAt: t.completed_at ? new Date(t.completed_at).getTime() : null,
+              pomodoroPausedAt: typeof t.pomodoro_paused_at === "number" ? t.pomodoro_paused_at : undefined,
+            }));
+            setTasks(mapped);
+            return;
+          }
+        }
+      } catch {}
+
+      // fallback local if backend empty/error
+      try {
+        const s = localStorage.getItem(tasksKey!);
+        setTasks(s ? JSON.parse(s) : []);
+      } catch {
+        setTasks([]);
+      }
+    })();
   }, [currentUser, prefsKey, tasksKey]);
 
 // --- Base Build Preview: MiniApp "ready" sinyali (actions.ready desteği) ---
@@ -199,8 +237,19 @@ useEffect(() => {
           localStorage.setItem(tasksKey, JSON.stringify(next));
         } catch {}
       }
+      // backend'e senkronize et (bulk replace)
+      try {
+        const addr = currentUser?.address;
+        if (addr) {
+          fetch('/api/tasks/bulk', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address: addr, tasks: next })
+          }).catch(() => {});
+        }
+      } catch {}
     },
-    [tasksKey]
+    [tasksKey, currentUser?.address]
   );
 
   const savePrefs = useCallback(
@@ -210,8 +259,19 @@ useEffect(() => {
           localStorage.setItem(prefsKey, JSON.stringify({ filter, sort }));
         } catch {}
       }
+      // backend'e yaz
+      try {
+        const addr = currentUser?.address;
+        if (addr) {
+          fetch('/api/preferences', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address: addr, filter, sort, active_tag: activeTag })
+          }).catch(() => {});
+        }
+      } catch {}
     },
-    [prefsKey]
+    [prefsKey, currentUser?.address, activeTag]
   );
 
   // Wallet bağlan
